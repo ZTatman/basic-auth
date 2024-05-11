@@ -10,11 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@hono/node-server": "^1.11.1",
     "bcrypt-ts": "^5.0.2",
+    "cross-env": "^7.0.3",
+    "hono": "^4.3.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@hono/vite-dev-server": "^0.12.1",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@vitejs/plugin-react": "^4.2.1",
