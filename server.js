@@ -3,6 +3,7 @@ import { serve } from '@hono/node-server';
 import { serveStatic } from '@hono/node-server/serve-static';
 import { readFile } from 'node:fs/promises';
 
+// eslint-disable-next-line no-undef
 const isProd = process.env['NODE_ENV'] === 'production';
 let html = await readFile(isProd ? 'build/index.html' : 'index.html', 'utf8');
 
