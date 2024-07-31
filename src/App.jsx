@@ -1,4 +1,4 @@
-import "./App.css";
+import "./app.css";
 import { useState, useEffect } from "react";
 
 const EMPTY_FORM = Object.freeze({
@@ -31,9 +31,9 @@ function App() {
 
     useEffect(() => {
         console.log(":: requestData: ", requestData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [requestData]);
 
-    console.log(":: formData: ", formData);
     return (
         <>
             <h1 className="title">Basic Authentication</h1>

@@ -1,12 +1,14 @@
 import { Hono } from "hono";
 import { serve } from "@hono/node-server";
-import { serveStatic } from "@hono/node-server/serve-static";
 import { readFile } from "node:fs/promises";
+import { genSalt, hash as _hash } from "bcrypt-ts";
+
+const SALT_ROUNDS = 13;
+const USERS = [];
 
 // eslint-disable-next-line no-undef
 const isProd = process.env["NODE_ENV"] === "production";
 let html = await readFile(isProd ? "build/index.html" : "index.html", "utf8");
-
 if (!isProd) {
     // Inject Vite client code to the HTML
     html = html.replace(
@@ -24,25 +26,21 @@ if (!isProd) {
 
 const app = new Hono();
 
-app.get("/entry/:id", (c) => {
-    // Log the entire request object for debugging
-    console.log(":: request object: ", c.req);
-
-    // Extract and log the id parameter
-    const { id } = c.req.param();
-    console.log(":: extracted id: ", id);
-
-    // Fallback handling and logging
-    if (id === undefined) {
-        console.log(":: id is undefined, something went wrong.");
-        return c.text("Error: ID parameter is missing or undefined", 400);
-    }
-    const response = { "your id is": id };
-    console.log(":: response: ", response);
-    return c.json({ "your id is": id });
-});
-
 app.get("/", (c) => c.html(html));
+
+app.post("/signup", async (c) => {
+    const { username, password } = await c.req.json();
+    let newUser = {};
+    try {
+        const salt = await genSalt(SALT_ROUNDS);
+        const hash = await _hash(password, salt);
+        newUser = Object.freeze({ username, password: hash });
+        USERS.push(newUser);
+        return c.json({...newUser}, 201);
+    } catch (error) {
+        console.log("Failed to sign up new user: ", error.message);
+    }
+});
 
 if (!isProd) {
     serve({ ...app, port: 3000 }, (info) => {
